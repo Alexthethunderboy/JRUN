@@ -1,113 +1,125 @@
-import Image from "next/image";
+'use client'
+import HeroSection from '@/components/HeroSection'
+import ServiceCard from '../components/ServiceCard'
+import { FaSearch, FaStar, FaClock, FaShieldAlt } from 'react-icons/fa'
+import TestimonialCard from '@/components/TestimonialCard'
+import CleanerCard from '@/components/CleanerCard'
+import Link from 'next/link'
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className=' text-white '>
+      <HeroSection/>
+      <section className=" mx-auto my-12 bg-[#1A1A1A] p-10">
+        <h2 className="text-3xl font-bold mb-8 text-center">Our Services</h2>
+        <div className=" grid grid-cols-1 md:grid-cols-3 gap-8">
+          <ServiceCard title="Office Cleaning" description="High-quality office cleaning services." backgroundImage="url('/office.png')" />
+          <ServiceCard title="Post-Construction Cleaning" description="Thorough cleaning after construction work."
+          backgroundImage="url('/post.png')" />
+          <ServiceCard title="Janitorial Service" description="Reliable janitorial services." 
+          backgroundImage="url('/janitor.png')"/>
+          <ServiceCard title="Laundry" description="Professional laundry services." 
+          backgroundImage="url('/laundry.png')"/>
+          <ServiceCard title="Car Repair" description="Expert car repair services." 
+          backgroundImage="url('/carr.png')"/>
+          <ServiceCard title="Car Wash" description="Efficient and thorough car wash services." 
+          backgroundImage="url('/carw.png')"/>
         </div>
-      </div>
+      </section>
+      <section className="py-20 ">
+        <div className="container mx-auto p-4   ">
+          <h2 className="text-3xl font-bold mb-8 text-center">How JRUN Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center rounded-lg border border-primary p-5">
+              <div className="bg-primary  rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <FaSearch className="text-2xl " />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">1. Book</h3>
+              <p>Select the date and time you'd like your professional to show up.</p>
+            </div>
+            <div className="text-center rounded-lg border border-primary p-5">
+              <div className="bg-primary  rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <FaClock className="text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">2. Clean</h3>
+              <p>A certified cleaner comes over and cleans your place.</p>
+            </div>
+            <div className="text-center rounded-lg border border-primary p-5">
+              <div className="bg-primary  rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <FaStar className="text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">3. Relax</h3>
+              <p>Sit back and relax. Enjoy your clean home!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+       {/* Features Section */}
+       <section className=" py-20 px-2  bg-[#1A1A1A]">
+        <div className="container mx-auto px-4 ">
+          <h2 className="text-3xl font-bold mb-8 text-center">Why Choose JRUN</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className=" p-6 rounded-lg shadow-xl">
+              <FaShieldAlt className="text-4xl text-primary mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Trusted Professionals</h3>
+              <p>All cleaners are background-checked and rated by customers like you.</p>
+            </div>
+            <div className=" p-6 rounded-lg shadow-md">
+              <FaClock className="text-4xl text-primary mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Flexible Scheduling</h3>
+              <p>Book a cleaning for as early as tomorrow or schedule weeks in advance.</p>
+            </div>
+            <div className=" p-6 rounded-lg shadow-md">
+              <FaStar className="text-4xl text-primary mb-4" />
+              <h3 className="text-xl font-semibold mb-2">100% Satisfaction Guarantee</h3>
+              <p>If you're not satisfied with the cleaning, we'll make it right.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="container mx-auto py-12 px-4">
+        <h2 className="text-3xl font-bold mb-8 text-center">What Our Clients Say</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <TestimonialCard 
+            quote="JRUN has the best cleaning service I've ever used!" 
+            name="John Doe" 
+            image="/path/to/image.jpg" 
+          />
+          <TestimonialCard 
+            quote="Highly professional and very reliable!" 
+            name="Jane Smith" 
+            image="/path/to/image.jpg" 
+          />
+          <TestimonialCard 
+            quote="They made my post-construction cleaning a breeze!" 
+            name="Michael Johnson" 
+            image="/path/to/image.jpg" 
+          />
+        </div>
+      </section>
+      {/* Top Rated Cleaners */}
+      <section className="bg-[#1A1A1A] py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-8 text-center">Our Top Rated Cleaners</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <CleanerCard name="Alice Brown" rating={4.9} image="/images/cleaner1.jpg" />
+            <CleanerCard name="Bob Green" rating={4.8} image="/images/cleaner2.jpg" />
+            <CleanerCard name="Charlie White" rating={4.7} image="/images/cleaner3.jpg" />
+            <CleanerCard name="Diana Black" rating={4.9} image="/images/cleaner4.jpg" />
+          </div>
+        </div>
+      </section>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      {/* Call to Action */}
+      <section className=" text-white py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-8">Ready for a Cleaner Home?</h2>
+          <Link href="/book" className="bg-primary  px-8 py-3 rounded-lg text-lg font-semibold hover:bg-opacity-90 transition duration-300">
+            Book a Cleaner Now
+          </Link>
+        </div>
+      </section>
     </main>
-  );
+  )
 }
+

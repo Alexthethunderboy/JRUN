@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+  
+}
+main {
+  margin: 0 auto;
+  
+}
+/* main{
+  background: rgba(0, 0, 0, 0.5) url('/jrunmain.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  
+  background-blend-mode: overlay;
+
+} */
+/* body.dark {
+  background-color: #1A1A1A;
+  color: #E5E7EB;
+}
+
+.bg-darkBg {
+  background-color: #1A1A1A;
+}
+
+.text-darkText {
+  color: #E5E7EB;
+} */
+
+
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -30,4 +67,4 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-}
+} */
