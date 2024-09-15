@@ -14,20 +14,7 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
-  // const [darkMode, setDarkMode] = useState(false)
-
-  // useEffect(() => {
-  //   const body = document.body
-  //   if (darkMode) {
-  //     body.classList.add('dark')
-  //   } else {
-  //     body.classList.remove('dark')
-  //   }
-  // }, [darkMode])
-
-  // const toggleDarkMode = () => {
-  //   setDarkMode(!darkMode)
-  // }
+  
 
   return (
     <html lang="en">

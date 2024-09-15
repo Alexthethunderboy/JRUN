@@ -83,17 +83,17 @@ export default function HomePage() {
           <TestimonialCard 
             quote="JRUN has the best cleaning service I've ever used!" 
             name="John Doe" 
-            image="/path/to/image.jpg" 
+            image="/man2.png" 
           />
           <TestimonialCard 
             quote="Highly professional and very reliable!" 
             name="Jane Smith" 
-            image="/path/to/image.jpg" 
+            image="/review1.png" 
           />
           <TestimonialCard 
             quote="They made my post-construction cleaning a breeze!" 
-            name="Michael Johnson" 
-            image="/path/to/image.jpg" 
+            name="Sharon Johnson" 
+            image="/review2.png" 
           />
         </div>
       </section>
@@ -102,10 +102,10 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center">Our Top Rated Cleaners</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <CleanerCard name="Alice Brown" rating={4.9} image="/images/cleaner1.jpg" />
-            <CleanerCard name="Bob Green" rating={4.8} image="/images/cleaner2.jpg" />
-            <CleanerCard name="Charlie White" rating={4.7} image="/images/cleaner3.jpg" />
-            <CleanerCard name="Diana Black" rating={4.9} image="/images/cleaner4.jpg" />
+            <CleanerCard name="Alice Brown" rating={4.9} image="/cleaner1.png" />
+            <CleanerCard name="Bob Green" rating={4.8} image="/cleaner2.png" />
+            <CleanerCard name="Charlie White" rating={4.7} image="/cleaner3.png" />
+            <CleanerCard name="Diana Black" rating={4.9} image="/cleaner4.png" />
           </div>
         </div>
       </section>

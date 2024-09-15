@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa'
 
 export default function Categories() {
   return (
-    <div className="bg-secondary dark:bg-darkBg text-black dark:text-darkText min-h-screen">
+    <div className="bg-secondary  text-white min-h-screen">
       
       <main className="p-4">
         <section className="bg-cover bg-center h-64" style={{ backgroundImage: "url('/background.jpg')", opacity: 0.8 }}>
@@ -17,7 +17,7 @@ export default function Categories() {
             </div>
           </div>
         </section>
-        <section className="p-4">
+        <section className="p-4 ">
           <h2 className="text-4xl font-bold text-center mb-8">Our Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <ServiceCard title="Cleaning" services={["Office cleaning", "Post-construction cleaning", "Janitorial service", "School cleaning", "After party cleaning"]} backgroundImage="url('/office.png')" />
