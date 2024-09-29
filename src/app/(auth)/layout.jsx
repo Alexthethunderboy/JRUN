@@ -1,19 +1,15 @@
 import AuthHeader from '@/components/AuthHeader'
-import ClientSessionProvider from '@/components/client-session-provider'
 import { Inter } from 'next/font/google'
-
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function RootLayout({ children }) {
+export default function AuthLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ClientSessionProvider>
+    <div className={` bg-black ${inter.className}`}>
         <AuthHeader/>
-          {children}
-          </ClientSessionProvider>
-      </body>
-    </html>
+        <div className='flex flex-col items-center md:justify-center md:pt-40 pt-10 p-4 h-screen '>
+      {children}
+      </div>
+    </div>
   )
 }

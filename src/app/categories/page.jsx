@@ -20,7 +20,7 @@ export default function Categories() {
         <section className="p-4 ">
           <h2 className="text-4xl font-bold text-center mb-8">Our Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <ServiceCard title="Cleaning" services={["Office cleaning", "Post-construction cleaning", "Janitorial service", "School cleaning", "After party cleaning"]} backgroundImage="url('/office.png')" />
+            <ServiceCard title="Cleaning" services={[]} backgroundImage="url('/office.png')" />
             <ServiceCard title="Laundry" services={[]} backgroundImage="url('/laundry.png')"/>
             <ServiceCard title="Car Repair" services={[]} backgroundImage="url('/carr.png')"/>
             <ServiceCard title="Car Wash" services={[]} backgroundImage="url('/carw.png')"/>
@@ -39,7 +39,7 @@ export default function Categories() {
 
 const ServiceCard = ({ title, services, backgroundImage }) => (
   <div
-    className="relative bg-cover bg-center text-white p-4 rounded-md shadow-md overflow-hidden"
+    className="relative bg-cover bg-center text-white p-4 rounded-md shadow-md overflow-hidden h-60"
     style={{ backgroundImage: backgroundImage }}
   >
     {/* Overlay for opacity */}

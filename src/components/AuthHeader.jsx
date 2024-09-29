@@ -7,9 +7,9 @@ import Image from 'next/image';
 
 export default function AuthHeader() {
   return (
-    <header className='w-full py-2 ps-20 bg-black'>
+    <header className='w-full ps-4 md:ps-20 bg-black'>
         <Link href={'/'}>
-        <Image src={logo} width={100} alt='jrun logo'/>
+        <Image src={logo} width={80} alt='jrun logo'/>
         </Link>
     </header>
   )
