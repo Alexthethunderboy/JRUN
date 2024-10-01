@@ -18,6 +18,7 @@ export default function Header() {
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleProfileMenu = () => setShowProfileMenu(!showProfileMenu);
@@ -26,6 +27,25 @@ export default function Header() {
     await signOut({ redirect: false });
     router.push('/');
   };
+
+
+  useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch('/api/user/profile');
+      if (!res.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+      const data = await res.json();
+      setUserProfile(data);
+    } catch (err) {
+      setError(err.message);
+    } 
+  };
+  if (session) {
+    fetchProfile();
+  }
+}, [session]);
 
   const handleScroll = useCallback(() => {
     if (typeof window !== "undefined" && !isOpen) {
@@ -107,7 +127,7 @@ export default function Header() {
                     ) : (
                       <FaUser className="mr-2" />
                     )}
-                    {session.user.name}
+                    {userProfile?.name || 'User'}
                   </Button>
                   <AnimatePresence>
                     {showProfileMenu && (
@@ -195,7 +215,7 @@ export default function Header() {
                       ) : (
                         <FaUser className="mr-2" />
                       )}
-                      {session.user.name}
+                      {userProfile?.name || 'User'}
                     </Button>
                     <AnimatePresence>
                       {showProfileMenu && (
