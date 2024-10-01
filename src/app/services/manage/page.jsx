@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { GridLoader } from 'react-spinners';
 
 export default function ManageServicesPage() {
   const [services, setServices] = useState([]);
@@ -37,11 +38,11 @@ export default function ManageServicesPage() {
   };
 
   if (loading) {
-    return <p>Loading services...</p>;
+    return <div className='flex justify-center items-center min-h-screen'><GridLoader color='#597D35'/></div>
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 min-h-screen text-white">
       <h1 className="text-3xl font-bold mb-6">Manage Services</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

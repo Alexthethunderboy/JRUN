@@ -1,16 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Menu, X } from 'lucide-react';
 
 export default function MessagesPage() {
   const { data: session } = useSession();
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [message, setMessage] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -22,6 +26,10 @@ export default function MessagesPage() {
 
     fetchConversations();
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedConversation]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -43,52 +51,98 @@ export default function MessagesPage() {
     }
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 text-white">
-      <h1 className="text-3xl font-bold mb-6">Messages</h1>
+    <div className="container mx-auto px-4 py-8 text-white min-h-screen flex flex-col">
+      <h1 className="text-3xl font-bold mb-6 text-primary">Messages</h1>
 
-      <div className="flex h-[600px]">
-        <Card className="w-1/3 mr-4 overflow-y-auto bg-black border-0 text-white">
-          <CardHeader>
-            <CardTitle className=''>Conversations</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {conversations.map((conversation) => (
-              <div
-                key={conversation.id}
-                className={`p-2 cursor-pointer ${selectedConversation?.id === conversation.id ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
-                onClick={() => setSelectedConversation(conversation)}
-              >
-                <p className="font-semibold">{conversation.otherUser.name}</p>
-                <p className="text-sm text-gray-500 truncate">{conversation.lastMessage}</p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+      <div className="flex-1 flex flex-col lg:flex-row h-[calc(100vh-200px)]">
+        <div className="lg:hidden mb-4">
+          <Button onClick={toggleMobileMenu} className="w-full">
+            {isMobileMenuOpen ? <X /> : <Menu />} Conversations
+          </Button>
+        </div>
 
-        <Card className="flex-1 flex flex-col bg-black text-white border-0">
+        <AnimatePresence>
+          {(isMobileMenuOpen || window.innerWidth >= 1024) && (
+            <motion.div
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="lg:w-1/3 lg:mr-4 mb-4 lg:mb-0"
+            >
+              <Card className="h-full overflow-y-auto bg-black border-primary text-white">
+                <CardHeader>
+                  <CardTitle className="text-primary">Conversations</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {conversations.map((conversation) => (
+                    <motion.div
+                      key={conversation.id}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`p-3 my-2 cursor-pointer rounded-lg transition-colors ${
+                        selectedConversation?.id === conversation.id
+                          ? 'bg-primary text-primary-foreground'
+                          : 'hover:bg-primary/10'
+                      }`}
+                      onClick={() => {
+                        setSelectedConversation(conversation);
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <p className="font-semibold">{conversation.otherUser.name}</p>
+                      <p className="text-sm text-gray-400 truncate">{conversation.lastMessage}</p>
+                    </motion.div>
+                  ))}
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <Card className="flex-1 flex flex-col bg-black text-white border-primary">
           <CardHeader>
-            <CardTitle>{selectedConversation ? selectedConversation.otherUser.name : 'Select a conversation'}</CardTitle>
+            <CardTitle className="text-primary">
+              {selectedConversation ? selectedConversation.otherUser.name : 'Select a conversation'}
+            </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 overflow-y-auto">
             {selectedConversation && selectedConversation.messages.map((msg, index) => (
-              <div key={index} className={`mb-2 ${msg.sender === session.user.id ? 'text-right' : 'text-left'}`}>
-                <span className={`inline-block p-2 rounded-lg ${msg.sender === session.user.id ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`mb-2 ${msg.sender === session.user.id ? 'text-right' : 'text-left'}`}
+              >
+                <span className={`inline-block p-2 rounded-lg ${
+                  msg.sender === session.user.id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground'
+                }`}>
                   {msg.content}
                 </span>
-              </div>
+              </motion.div>
             ))}
+            <div ref={messagesEndRef} />
           </CardContent>
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-primary">
             <form onSubmit={handleSendMessage} className="flex">
               <Input
                 type="text"
                 placeholder="Type a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="flex-1 mr-2 border-secondary"
+                className="flex-1 mr-2 bg-black text-white border-primary"
               />
-              <Button type="submit">Send</Button>
+              <Button type="submit" className="bg-primary hover:bg-primary/90">
+                <Send size={18} />
+              </Button>
             </form>
           </div>
         </Card>

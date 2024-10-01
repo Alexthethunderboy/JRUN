@@ -39,10 +39,10 @@ export default function BookServicePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-white ">
       <h1 className="text-3xl font-bold mb-6">Book a Service</h1>
 
-      <Card>
+      <Card className='text-white bg-black border-0'>
         <CardHeader>
           <CardTitle>Service Details</CardTitle>
         </CardHeader>
@@ -55,7 +55,7 @@ export default function BookServicePage() {
                 name="serviceType"
                 value={formData.serviceType}
                 onChange={handleInputChange}
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full py-2 px-3 border border-primary bg-black rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                 required
               >
                 <option value="">Select a service</option>
