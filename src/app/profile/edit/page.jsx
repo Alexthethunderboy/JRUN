@@ -67,7 +67,9 @@ export default function EditProfilePage() {
     try {
       const formData = new FormData();
       Object.keys(profile).forEach(key => {
-        formData.append(key, profile[key]);
+        if (key !== 'image') {
+          formData.append(key, profile[key]);
+        }
       });
       if (imageFile) {
         formData.append('image', imageFile);
@@ -115,10 +117,10 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 text-white">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
 
-      <Card className="bg-black text-white border-0">
+      <Card>
         <CardHeader>
           <CardTitle>Update Your Information</CardTitle>
         </CardHeader>
