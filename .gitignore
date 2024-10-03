@@ -28,9 +28,20 @@ yarn-error.log*
 # local env files
 .env*.local
 
+.env
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+public/uploads/*
+!public/uploads/.gitkeep
+
+
+node_modules
+.next
+

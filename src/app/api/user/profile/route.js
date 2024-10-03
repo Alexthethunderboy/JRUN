@@ -62,9 +62,16 @@ export async function PUT(req) {
       const buffer = Buffer.from(bytes);
 
       const filename = `${session.user.id}-${Date.now()}${path.extname(image.name)}`;
-      const filepath = path.join(process.cwd(), 'public', 'uploads', filename);
-      await writeFile(filepath, buffer);
-      imageUrl = `/uploads/${filename}`;
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      const filepath = path.join(uploadDir, filename);
+
+      try {
+        await writeFile(filepath, buffer);
+        imageUrl = `/uploads/${filename}`;
+      } catch (error) {
+        console.error("Error saving image:", error);
+        return NextResponse.json({ error: "Failed to save image" }, { status: 500 });
+      }
     }
 
     const updatedUser = await prisma.user.update({

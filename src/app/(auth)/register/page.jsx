@@ -39,7 +39,7 @@ export default function RegisterOptionPage() {
               transition={{ duration: 1.5, ease: "easeInOut" }}
             />
             <h2 className="text-3xl font-bold text-center text-primary mb-8">Join JRun as a client or worker</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-center">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

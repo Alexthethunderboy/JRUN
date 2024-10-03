@@ -117,10 +117,10 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-white">
       <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
 
-      <Card>
+      <Card className='bg-black text-white border-0'>
         <CardHeader>
           <CardTitle>Update Your Information</CardTitle>
         </CardHeader>
