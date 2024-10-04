@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from 'next/navigation';
-import { FaBars, FaTimes, FaUser } from "react-icons/fa";
+import { FaBars, FaTimes, FaUser, FaBell } from "react-icons/fa";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ export default function Header() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleProfileMenu = () => setShowProfileMenu(!showProfileMenu);
@@ -28,24 +29,37 @@ export default function Header() {
     router.push('/');
   };
 
-
   useEffect(() => {
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch('/api/user/profile');
-      if (!res.ok) {
-        throw new Error('Failed to fetch profile');
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('/api/user/profile');
+        if (!res.ok) {
+          throw new Error('Failed to fetch profile');
+        }
+        const data = await res.json();
+        setUserProfile(data);
+      } catch (err) {
+        console.error(err.message);
+      } 
+    };
+
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await fetch('/api/notifications/unread-count');
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadCount(data.count);
+        }
+      } catch (error) {
+        console.error('Error fetching unread notifications count:', error);
       }
-      const data = await res.json();
-      setUserProfile(data);
-    } catch (err) {
-      setError(err.message);
-    } 
-  };
-  if (session) {
-    fetchProfile();
-  }
-}, [session]);
+    };
+
+    if (session) {
+      fetchProfile();
+      fetchUnreadCount();
+    }
+  }, [session]);
 
   const handleScroll = useCallback(() => {
     if (typeof window !== "undefined" && !isOpen) {
@@ -70,7 +84,6 @@ export default function Header() {
         { name: "Dashboard", href: "/dashboard" },
         { name: "My Services", href: "/services" },
         { name: "Messages", href: "/messages" },
-        { name: "Notifications", href: "/notifications" },
       ]
     : [
         { name: "Home", href: "/" },
@@ -110,94 +123,15 @@ export default function Header() {
                   <GridLoader color="#597D35" size={"10"} />
                 </div>
               ) : session ? (
-                <div className="relative">
-                  <Button
-                    onClick={toggleProfileMenu}
-                    variant="ghost"
-                    className="flex items-center hover:bg-primary"
-                  >
-                    {session.user.image ? (
-                      <Image
-                        src={session.user.image}
-                        width={32}
-                        height={32}
-                        alt="Profile"
-                        className="rounded-full mr-2"
-                      />
-                    ) : (
-                      <FaUser className="mr-2" />
+                <>
+                  <Link href="/notifications" className="relative">
+                    <FaBell size={24} />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                        {unreadCount}
+                      </span>
                     )}
-                    {userProfile?.name || 'User'}
-                  </Button>
-                  <AnimatePresence>
-                    {showProfileMenu && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
-                      >
-                        <Link
-                          href="/profile"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={toggleProfileMenu}
-                        >
-                          Profile
-                        </Link>
-                        <Link
-                          href="/settings"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={toggleProfileMenu}
-                        >
-                          Settings
-                        </Link>
-                        <button
-                          onClick={handleSignOut}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary"
-                        >
-                          Sign out
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <Link href="/register">
-                  <Button>Get Started</Button>
-                </Link>
-              )}
-            </div>
-            <div className="md:hidden">
-              <button onClick={toggleMenu}>
-                {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-              </button>
-            </div>
-          </div>
-
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -50 }}
-                className="md:hidden flex flex-col items-center space-y-4 pb-6"
-              >
-                {navItems.map((item) => (
-                  <div key={item.name}>
-                    <Link
-                      href={item.href}
-                      onClick={toggleMenu}
-                      className="hover:text-primary transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  </div>
-                ))}
-                {status === "loading" ? (
-                  <div className="flex justify-center items-center w-20 ">
-                    <GridLoader color="#597D35" size={"10"} />
-                  </div>
-                ) : session ? (
+                  </Link>
                   <div className="relative">
                     <Button
                       onClick={toggleProfileMenu}
@@ -249,8 +183,116 @@ export default function Header() {
                       )}
                     </AnimatePresence>
                   </div>
+                </>
+              ) : (
+                <Link href="/register">
+                  <Button>Get Started</Button>
+                </Link>
+              )}
+            </div>
+            <div className="md:hidden">
+              <button onClick={toggleMenu}>
+                {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+              </button>
+            </div>
+          </div>
+
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                className="md:hidden flex flex-col items-center space-y-4 pb-6"
+              >
+                {navItems.map((item) => (
+                  <div key={item.name}>
+                    <Link
+                      href={item.href}
+                      onClick={toggleMenu}
+                      className="hover:text-primary transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  </div>
+                ))}
+                {status === "loading" ? (
+                  <div className="flex justify-center items-center w-20 ">
+                    <GridLoader color="#597D35" size={"10"} />
+                  </div>
+                ) : session ? (
+                  <>
+                    <Link href="/notifications" className="relative" onClick={toggleMenu}>
+                      <FaBell size={24} />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </Link>
+                    <div className="relative">
+                      <Button
+                        onClick={toggleProfileMenu}
+                        variant="ghost"
+                        className="flex items-center hover:bg-primary"
+                      >
+                        {session.user.image ? (
+                          <Image
+                            src={session.user.image}
+                            width={32}
+                            height={32}
+                            alt="Profile"
+                            className="rounded-full mr-2"
+                          />
+                        ) : (
+                          <FaUser className="mr-2" />
+                        )}
+                        {userProfile?.name || 'User'}
+                      </Button>
+                      <AnimatePresence>
+                        {showProfileMenu && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                          >
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => {
+                                toggleProfileMenu();
+                                toggleMenu();
+                              }}
+                            >
+                              Profile
+                            </Link>
+                            <Link
+                              href="/settings"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              onClick={() => {
+                                toggleProfileMenu();
+                                toggleMenu();
+                              }}
+                            >
+                              Settings
+                            </Link>
+                            <button
+                              onClick={() => {
+                                handleSignOut();
+                                toggleMenu();
+                              }}
+                              className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-primary"
+                            >
+                              Sign out
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </>
                 ) : (
-                  <Link href="/register">
+                  <Link href="/register" onClick={toggleMenu}>
                     <Button>Get Started</Button>
                   </Link>
                 )}

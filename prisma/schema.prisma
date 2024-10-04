@@ -10,22 +10,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Service {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String         @db.ObjectId
+  workerId      String?        @db.ObjectId
+  serviceType   String
+  date          String
+  time          String
+  location      String
+  description   String?
+  status        String         @default("PENDING")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation("ClientServices", fields: [userId], references: [id])
+  worker        User?          @relation("WorkerServices", fields: [workerId], references: [id])
+  notifications Notification[]
+}
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  serviceId String   @db.ObjectId
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  service   Service  @relation(fields: [serviceId], references: [id])
+}
+
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  userType      String?
-  bio           String?
-  location      String?
-  phone         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  activities    Activity[]
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String?
+  email           String?   @unique
+  emailVerified   DateTime?
+  image           String?
+  password        String?
+  userType        String?
+  bio             String?
+  location        String?
+  phone           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  accounts        Account[]
+  sessions        Session[]
+  activities      Activity[]
+  clientServices  Service[] @relation("ClientServices")
+  workerServices  Service[] @relation("WorkerServices")
+  notifications Notification[]
 }
 
 model Account {
@@ -72,3 +103,4 @@ model Activity {
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
 }
+

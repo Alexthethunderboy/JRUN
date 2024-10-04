@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function BookServicePage() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     serviceType: '',
     date: '',
@@ -17,55 +17,66 @@ export default function BookServicePage() {
     location: '',
     description: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch('/api/services/book', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    });
+    setIsLoading(true);
+    setError('');
 
-    if (res.ok) {
-      router.push('/services');
-    } else {
-      alert('Failed to book service');
+    try {
+      const res = await fetch('/api/services/book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        router.push('/dashboard');
+      } else {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to book service');
+      }
+    } catch (error) {
+      console.error('Error booking service:', error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 text-white ">
-      <h1 className="text-3xl font-bold mb-6">Book a Service</h1>
-
-      <Card className='text-white bg-black border-0'>
+    <div className="container mx-auto px-4 py-8">
+      <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Service Details</CardTitle>
+          <CardTitle className="text-2xl font-bold">Book a Service</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="serviceType">Service Type</Label>
-              <select
-                id="serviceType"
-                name="serviceType"
-                value={formData.serviceType}
-                onChange={handleInputChange}
-                className="mt-1 block w-full py-2 px-3 border border-primary bg-black rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                required
-              >
-                <option value="">Select a service</option>
-                <option value="cleaning">Cleaning</option>
-                <option value="laundry">Laundry</option>
-                <option value="carwash">Car Wash</option>
-                <option value="carrepair">Car Repair</option>
-              </select>
+              <Select name="serviceType" onValueChange={(value) => handleSelectChange('serviceType', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a service" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cleaning">Cleaning</SelectItem>
+                  <SelectItem value="laundry">Laundry</SelectItem>
+                  <SelectItem value="carwash">Car Wash</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-
             <div>
               <Label htmlFor="date">Date</Label>
               <Input
@@ -77,7 +88,6 @@ export default function BookServicePage() {
                 required
               />
             </div>
-
             <div>
               <Label htmlFor="time">Time</Label>
               <Input
@@ -89,7 +99,6 @@ export default function BookServicePage() {
                 required
               />
             </div>
-
             <div>
               <Label htmlFor="location">Location</Label>
               <Input
@@ -101,7 +110,6 @@ export default function BookServicePage() {
                 required
               />
             </div>
-
             <div>
               <Label htmlFor="description">Description</Label>
               <Textarea
@@ -112,8 +120,10 @@ export default function BookServicePage() {
                 rows={4}
               />
             </div>
-
-            <Button type="submit">Book Service</Button>
+            {error && <p className="text-red-500">{error}</p>}
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Booking...' : 'Book Service'}
+            </Button>
           </form>
         </CardContent>
       </Card>

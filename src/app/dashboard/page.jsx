@@ -9,30 +9,16 @@ import { FaRunning, FaClipboardList, FaComments, FaBell } from 'react-icons/fa';
 import Image from 'next/image';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { GridLoader } from 'react-spinners';
+import ClientDashboard from '@/components/ClientDashboard';
+import WorkerDashboard from '@/components/WorkerDashboard';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
-  const [upcomingServices, setUpcomingServices] = useState([]);
-  const [recentActivities, setRecentActivities] = useState([]);
-  const [isProfileComplete, setIsProfileComplete] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch upcoming services and recent activities
-    const fetchData = async () => {
-      const servicesRes = await fetch('/api/services/upcoming');
-      const activitiesRes = await fetch('/api/activities/recent');
-      const profileRes = await fetch('/api/user/profile');
-      
-      if (servicesRes.ok && activitiesRes.ok && profileRes.ok) {
-        setUpcomingServices(await servicesRes.json());
-        setRecentActivities(await activitiesRes.json());
-        const profileData = await profileRes.json();
-        setIsProfileComplete(profileData.isComplete);
-      }
-    };
     const fetchProfile = async () => {
       try {
         const res = await fetch('/api/user/profile');
@@ -68,7 +54,6 @@ export default function DashboardPage() {
   const isProfileIncomplete = !userProfile || !userProfile.bio || !userProfile.location || !userProfile.phone;
 
   return (
-
     <div className="container mx-auto px-4 py-8 text-white min-h-screen">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -92,101 +77,12 @@ export default function DashboardPage() {
           </AlertDescription>
         </Alert>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-        <Card className='bg-black text-white border-0'>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FaRunning className="mr-2" />
-              Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full mb-2">
-              <Link href={'/services/book'}>Book a Service </Link>
-              </Button>
-            <Button variant="outline" className="w-full text-black">
-            <Link href={'/services/manage'}> Manage Services</Link>
-              </Button>
-              {/* <Link href="/profile/edit">
-                <Button className="w-full mt-2">Update Profile</Button>
-              </Link> */}
-          </CardContent>
-        </Card>
 
-        <Card className='bg-black text-white border-0'>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FaClipboardList className="mr-2" />
-              Upcoming Services
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {upcomingServices.map((service, index) => (
-                <li key={index}>{service.name} - {service.date}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card className='bg-black text-white border-0'>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FaComments className="mr-2" />
-              Recent Activities
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {recentActivities.map((activity, index) => (
-                <li key={index}>{activity.description}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card className='bg-black text-white border-0'>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FaBell className="mr-2" />
-              Notifications
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              <li>New message from support</li>
-              <li>Upcoming appointment reminder</li>
-              <li>Special offer available</li>
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className='bg-black text-white border-0'>
-          <CardHeader>
-            <CardTitle>Your Stats</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Total Services Booked: 15</p>
-            <p>Total Spent: $500</p>
-            <p>Average Rating: 4.8/5</p>
-          </CardContent>
-        </Card>
-
-        <Card className='bg-black text-white border-0'>
-          <CardHeader>
-            <CardTitle>Quick Links</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              <li><Link href="/profile" className="text-primary hover:underline">View Profile</Link></li>
-              <li><Link href="/services" className="text-primary hover:underline">Manage Services</Link></li>
-              <li><Link href="/messages" className="text-primary hover:underline">Check Messages</Link></li>
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+      {userProfile?.userType === 'user' ? (
+        <ClientDashboard userProfile={userProfile} />
+      ) : (
+        <WorkerDashboard userProfile={userProfile} />
+      )}
     </div>
   );
 }

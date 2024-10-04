@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { GridLoader } from 'react-spinners';
+import { toast } from 'react-hot-toast';
 
 export default function EditProfilePage() {
   const { data: session } = useSession();
@@ -33,6 +34,7 @@ export default function EditProfilePage() {
         setImagePreview(data.image);
       } catch (err) {
         setError(err.message);
+        toast.error(`Error fetching profile: ${err.message}`);
       } finally {
         setIsLoading(false);
       }
@@ -63,6 +65,7 @@ export default function EditProfilePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
+    setError(null);
 
     try {
       const formData = new FormData();
@@ -81,12 +84,15 @@ export default function EditProfilePage() {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to update profile');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update profile');
       }
 
+      toast.success('Profile updated successfully');
       router.push('/profile');
     } catch (err) {
       setError(err.message);
+      toast.error(`Error updating profile: ${err.message}`);
     } finally {
       setIsSaving(false);
     }
@@ -117,10 +123,10 @@ export default function EditProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 text-white">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
 
-      <Card className='bg-black text-white border-0'>
+      <Card>
         <CardHeader>
           <CardTitle>Update Your Information</CardTitle>
         </CardHeader>

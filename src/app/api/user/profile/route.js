@@ -37,7 +37,7 @@ export async function GET(req) {
     return NextResponse.json(user);
   } catch (error) {
     console.error("Error fetching user profile:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error", details: error.message }, { status: 500 });
   }
 }
 
@@ -70,7 +70,7 @@ export async function PUT(req) {
         imageUrl = `/uploads/${filename}`;
       } catch (error) {
         console.error("Error saving image:", error);
-        return NextResponse.json({ error: "Failed to save image" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to save image", details: error.message }, { status: 500 });
       }
     }
 
@@ -88,6 +88,6 @@ export async function PUT(req) {
     return NextResponse.json(updatedUser);
   } catch (error) {
     console.error("Error updating user profile:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error", details: error.message }, { status: 500 });
   }
 }

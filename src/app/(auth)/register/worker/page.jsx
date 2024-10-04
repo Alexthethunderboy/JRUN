@@ -74,7 +74,13 @@ export default function WorkerRegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, userType: 'worker' }),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          userType: 'worker',
+          services: formData.services,
+        }),
       });
 
       if (res.ok) {
@@ -105,12 +111,12 @@ export default function WorkerRegisterPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center ">
+    <div className="container mx-auto px-4 py-8 min-h-screen flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md h-screen "
+        className="w-full max-w-md"
       >
         <Card className="bg-secondary border-0 text-white">
           <CardHeader>
@@ -184,7 +190,6 @@ export default function WorkerRegisterPage() {
                         id={service}
                         checked={formData.services.includes(service)}
                         onCheckedChange={() => handleServiceChange(service)}
-                      
                       />
                       <label htmlFor={service} className="ml-2 text-sm font-medium">
                         {service.charAt(0).toUpperCase() + service.slice(1)}
