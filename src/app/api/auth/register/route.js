@@ -27,31 +27,42 @@ export async function POST(req) {
       userType,
     };
 
-    if (userType === 'worker' && services && services.length > 0) {
-      userData.services = {
-        create: services.map(serviceType => ({
-          serviceType,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        })),
-      };
-    }
-
     const user = await prisma.user.create({
       data: userData,
+    });
+
+    // If the user is a worker, create associated services
+    if (userType === 'worker' && services && services.length > 0) {
+      const now = new Date();
+      await prisma.service.createMany({
+        data: services.map(serviceType => ({
+          userId: user.id,
+          serviceType,
+          status: 'ACTIVE',
+          date: now.toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+          time: now.toTimeString().split(' ')[0], // Current time in HH:MM:SS format
+          location: 'Default Location', // Set to null or provide a default value
+        })),
+      });
+    }
+
+    // Fetch the created user with their services
+    const createdUser = await prisma.user.findUnique({
+      where: { id: user.id },
       include: {
-        services: true,
+        clientServices: true,
+        workerServices: true,
       },
     });
 
     return NextResponse.json({
       message: 'User created successfully',
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        userType: user.userType,
-        services: user.services,
+        id: createdUser.id,
+        name: createdUser.name,
+        email: createdUser.email,
+        userType: createdUser.userType,
+        services: createdUser.userType === 'worker' ? createdUser.workerServices : createdUser.clientServices,
       },
     }, { status: 201 });
   } catch (error) {

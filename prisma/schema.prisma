@@ -10,22 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Service {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String         @db.ObjectId
-  workerId      String?        @db.ObjectId
-  serviceType   String
-  date          String
-  time          String
-  location      String
-  description   String?
-  status        String         @default("PENDING")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  user          User           @relation("ClientServices", fields: [userId], references: [id])
-  worker        User?          @relation("WorkerServices", fields: [workerId], references: [id])
-  notifications Notification[]
-}
 
 model Notification {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -56,6 +40,23 @@ model User {
   activities      Activity[]
   clientServices  Service[] @relation("ClientServices")
   workerServices  Service[] @relation("WorkerServices")
+  notifications   Notification[]
+}
+
+model Service {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String         @db.ObjectId
+  workerId      String?        @db.ObjectId
+  serviceType   String
+  date          String?        // Make this field optional
+  time          String?        // Make this field optional
+  location      String?        // Make this field optional
+  description   String?
+  status        String         @default("PENDING")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation("ClientServices", fields: [userId], references: [id])
+  worker        User?          @relation("WorkerServices", fields: [workerId], references: [id])
   notifications Notification[]
 }
 
